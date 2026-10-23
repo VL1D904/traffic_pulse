@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Трансляция</title>
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', path='/images/logo.ico') }}">
+    <link rel="stylesheet" href="{{ url_for('static', path='/styles/source.css') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+</head>
+<body>
+</head>
+<body>
+    <header>
+        <article class="logo">
+            <a href="/">
+                <img src="{{ url_for('static', path='/images/logo.png') }}" alt="">
+                <h3>Traffic Pulse</h3>
+            </a>
+        </article>
+        {% if user: %}
+        <p>{{user}}</p>
+        {% else: %}
+        <a href="/login">Войти как администратор</a>
+        {% endif %}
+    </header>
+    <hr>
+    <main>
+        
+        <section class="source" data-id="{{source_id}}" id="{{source_id}}">
+            <h1>{{source_info[1]}}, {{source_info[2]}}</h1>
+            <img src="" alt="">
+            <span class="videoStatus"></span>
+
+            {% if user: %}
+                <button class="adminButton" data-id="{{source_id}}"></button>
+            {% endif %}
+        </section>
+
+        <iframe 
+            id="datalens-chart"
+            src="http://localhost:8080/o0bk0uzansvc8-ul-marshala-zhukova-76-omsk" 
+            width="100%" 
+            height="400em" 
+            frameborder="0"
+            sandbox="allow-scripts allow-same-origin allow-forms"
+            style="border: none;">
+        </iframe>
+    </main>
+    <hr>
+    <footer>
+        <p>Traffic Pulse</p>
+        <p>v904vladislav@yandex.ru</p>
+    </footer>
+</body>
+<script src="{{ url_for('static', path='/scripts/websocket_reader.js') }}"></script>
+<script type="module" src="{{ url_for('static', path='/scripts/check_sources.js') }}"></script>
+{% if user: %}
+<script src="{{ url_for('static', path='/scripts/source.js') }}"></script>
+{% endif %}
+</html>

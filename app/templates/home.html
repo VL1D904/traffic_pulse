@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TrafficPulse</title>
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', path='/images/logo.ico') }}">
+    <link rel="stylesheet" href="{{ url_for('static', path='/styles/home.css') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div id="overlay"></div>
+    <section id="addSourceWindow">
+        <button id="close">X</button>
+        <article class="content">
+            <h1>Введите новый источник</h1>
+            <p>URL:</p>
+            <input type="text", id="url">
+            <p>Город:</p>
+            <input type="text" id="city">
+            <p>Улица:</p>
+            <input type="text" id="street">
+            <p id="error">Не указаны ключевые значения</p>
+            <button id="addButton">Добавить</button>
+        </article>
+    </section>
+    <header>
+        <article class="logo">
+            <a href="/">
+                <img src="{{ url_for('static', path='/images/logo.png') }}" alt="">
+                <h3>Traffic Pulse</h3>
+            </a>
+        </article>
+        {% if user: %}
+        <form action="/auth/logout" method="post">
+            <p>{{user}}</p>
+            <button type="submit">Выйти</button>
+        </form >
+        {% else: %}
+        <a href="/auth/login" method="post">Войти как администратор</a>
+        {% endif %}
+    </header>
+    <hr>
+    <main>
+        <h1>Все трансляции</h1>
+        <section class="sources">
+            {% for source in sources: %}
+            <a href="/{{source[0]}}" class="source" data-id="{{source[0]}}" id="{{source[0]}}">
+                <img src="{{ url_for('static', path='/images/noPhoto.jpg') }}" alt="">
+                <p>{{source[2]}}, {{source[3]}}</p>
+                <span class="videoStatus"></span>
+            </a> 
+            {% endfor %}
+        </section>
+        {% if user: %}
+            <button id="addSourceButton">Добавить источник</button>
+        {% endif %}
+    </main>
+    <hr>
+    <footer>
+        <p>Traffic Pulse</p>
+        <p>v904vladislav@yandex.ru</p>
+    </footer>
+</body>
+<script src="{{ url_for('static', path='/scripts/websocket_reader.js') }}"></script>
+<script src="{{ url_for('static', path='/scripts/check_sources.js') }}"></script>
+{% if user: %}
+<script src="{{ url_for('static', path='/scripts/add_source.js') }}"></script>
+{% endif %}
+</html>
