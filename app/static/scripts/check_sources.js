@@ -2,7 +2,8 @@ const sourcesList = document.querySelectorAll(".source");
 
 function check_video_status() {
     sourcesList.forEach((source) => {
-        let url = `/api/video_status?video_id=${source.dataset.id}`
+        let status;
+        let url = `/video_api/video_status?video_id=${source.dataset.id}`
         fetch(url)
         .then((response) => {
             if (response.ok){
@@ -15,6 +16,7 @@ function check_video_status() {
         })
         .then((jsonData) => {
             status = jsonData["status"];
+            console.log(status)
             updateStatusSpan(source, status)
         })
         .catch((error) => {
@@ -36,7 +38,7 @@ function updateStatusSpan(source, status){
             videoButton.id = "stopWorker"
         }
     }
-    else{
+    else if (status == "inactive"){
         videoStatusElem.textContent = "Отключена";
         videoStatusElem.id = "completed";
         if (videoButton !== null){

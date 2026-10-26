@@ -2,21 +2,12 @@ from fastapi import APIRouter, Request, Form
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from fastapi.responses import RedirectResponse
-from admin import AdminModel
-from security_token import SecurityToken
-from pathlib import Path
+from dependies import BASE_DIR, templates, admin_model, jwt_tokenizer
 
 
-BASE_DIR = Path(__file__).resolve().parent.parent
 
 router = APIRouter(prefix='/auth', tags=["Auth"])
 router.mount("/static", StaticFiles(directory=BASE_DIR / 'static'), name="static")
-templates = Jinja2Templates(directory=BASE_DIR / 'templates')
-
-admin_model = AdminModel()
-admin_model.add_admin("admin", "admin")
-
-jwt_tokenizer = SecurityToken()
 
 
 @router.get("/login")

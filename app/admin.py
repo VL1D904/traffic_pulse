@@ -24,7 +24,7 @@ class AdminModel:
                 query = "insert into admin.admins (login, pwd) values (%s, %s) on conflict do nothing"
                 cursor.execute(query, (login, hashed_password.decode('utf-8')))
                 self.CONNECTION.commit()
-        except Exception as ex:
+        except psycopg2.Error as ex:
             self.CONNECTION.rollback()
             raise ex
 

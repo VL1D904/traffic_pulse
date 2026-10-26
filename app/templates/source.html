@@ -21,16 +21,19 @@
             </a>
         </article>
         {% if user: %}
-        <p>{{user}}</p>
+        <form action="/auth/logout" method="post">
+            <p>{{user}}</p>
+            <button type="submit">Выйти</button>
+        </form >
         {% else: %}
-        <a href="/login">Войти как администратор</a>
+        <a href="/auth/login">Войти как администратор</a>
         {% endif %}
     </header>
     <hr>
     <main>
         
         <section class="source" data-id="{{source_id}}" id="{{source_id}}">
-            <h1>{{source_info[1]}}, {{source_info[2]}}</h1>
+            <h1>{{source_info[2]}}, {{source_info[3]}}</h1>
             <img src="" alt="">
             <span class="videoStatus"></span>
 
@@ -39,7 +42,7 @@
             {% endif %}
         </section>
 
-        <iframe 
+        <!-- <iframe 
             id="datalens-chart"
             src="http://localhost:8080/o0bk0uzansvc8-ul-marshala-zhukova-76-omsk" 
             width="100%" 
@@ -47,7 +50,7 @@
             frameborder="0"
             sandbox="allow-scripts allow-same-origin allow-forms"
             style="border: none;">
-        </iframe>
+        </iframe> -->
     </main>
     <hr>
     <footer>

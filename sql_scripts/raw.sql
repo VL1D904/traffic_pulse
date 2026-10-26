@@ -16,7 +16,6 @@ create type status as enum('inactive', 'active', 'pending', 'error', 'completed'
 
 create table if not exists video_sources (
 	id serial primary key,
-	title varchar(100) not null unique,
 	street_id int not null references streets(id) on delete restrict on update cascade,
 	url text not null unique,
 	status status not null default 'inactive'

@@ -33,6 +33,20 @@ header>article>a>h3{
     font-size: 2em;
 }
 
+header>form{
+    display: flex;
+    gap: 1em;
+    font-size: 1.5em;
+}
+
+header>form>button{
+    cursor: pointer;
+    color: red;
+    font-size: 1em;
+    background-color: white;
+    border: none;
+}
+
 header>a{
     color: #00d4ff;
     text-decoration: none;

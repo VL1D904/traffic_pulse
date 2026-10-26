@@ -1,27 +1,23 @@
 from fastapi import APIRouter, Request, Depends
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
-from security_token import SecurityToken
-from pathlib import Path
+from dependies import BASE_DIR, templates, get_current_user, video_source_repository
 
 
-BASE_DIR = Path(__file__).resolve().parent.parent
 
 router = APIRouter(tags=["Pages"])
 router.mount("/static", StaticFiles(directory=BASE_DIR / 'static'), name="static")
-templates = Jinja2Templates(directory=BASE_DIR / 'templates')
-
-jwt_tokenizer = SecurityToken()
-
-def get_current_user(request: Request) -> str | bool:
-    session = request.cookies.get('admin_session', "")
-    payload = jwt_tokenizer.decode_access_token(session) 
-    if payload is None:
-        return False
-    return payload.get("login")
 
 @router.get("/")
 async def home_page(request: Request, user = Depends(get_current_user)):
+    sources = video_source_repository.get_video_sources()
     return templates.TemplateResponse(request=request,
                                         name="home.html",
-                                        context={"user": user})
+                                        context={"user": user, "sources": sources})
+
+@router.get("/{source_id}")
+async def source_page(request: Request, source_id: int, user = Depends(get_current_user)):
+    source_info = video_source_repository.get_video_sources(source_id)
+    return templates.TemplateResponse(request=request,
+                                        name="source.html",
+                                        context={"source_info": source_info, "user": user, "source_id": source_id})

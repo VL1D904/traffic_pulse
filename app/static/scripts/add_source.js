@@ -28,7 +28,7 @@ addSource.addEventListener("click", () => {
             "street": street
         }
 
-        fetch("/add_source", {
+        fetch("/video_api/add_source", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json;charset=utf-8"
