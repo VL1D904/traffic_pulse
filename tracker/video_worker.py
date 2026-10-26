@@ -1,18 +1,21 @@
+from tracking_pipeline import TrackingPipeline
 from video_resolver_factory import VideoResolverFactory
-from yolo_tracker import YoloTracker
 import cv2
 
 
-video_resolver = VideoResolverFactory.create("https://vkvideo.ru/video-143491903_456240262?t=497970544h40m32s")
-tracker = YoloTracker()
-for frame, _ in video_resolver.get_frames():
-    tracker.detect_object(frame)
+class VideoWorker:
+    def __init__(self) -> None:
+        self.tracking_pipeline = TrackingPipeline()
 
-    cv2.imshow("vk", tracker.get_detected_plot())
+    def start(self, url: str) -> None:
+        video_resolver = VideoResolverFactory.create(url)
+        for frame, frame_count in video_resolver.get_frames():
+            detected_plot, _ = self.tracking_pipeline.tracking(frame)
+            cv2.imshow("video", detected_plot)
 
-    if 0xFF == ord('q') & cv2.waitKey(1):
-        break
+            if 0xFF == ord('q') & cv2.waitKey(1):
+                break
 
+        cv2.destroyAllWindows()
 
-cv2.destroyAllWindows()
 

@@ -8,20 +8,12 @@ class YoloTracker:
 
         self.yolo_model_name = yolo_model_name
         self.yolo_model = YOLO(self.yolo_model_name)
-        self.detections = None
-        self.detected_plot = None
         self.session_uuid = uuid.uuid4()
-
-    def get_detections(self):
-        return self.detections
-
-    def get_detected_plot(self):
-        return self.detected_plot
 
     def get_session_uuid(self):
         return self.session_uuid
 
-    def reset_tracker(self) -> None:
+    def reset_tracker(self) -> tuple:
         self.yolo_model = YOLO(self.yolo_model_name)
         self.session_uuid = uuid.uuid4()
 
@@ -34,10 +26,11 @@ class YoloTracker:
                                        conf=0.35,
                                        verbose=False)
 
-        self.detected_plot = result[0].plot(
+        detected_plot = result[0].plot(
             line_width=2,
             font_size=.4,
             probs=False
         )
 
-        self.detections = result[0].boxes
+        detections = result[0].boxes
+        return (detected_plot, detections)

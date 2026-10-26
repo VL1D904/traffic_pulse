@@ -6,11 +6,11 @@ adminButton.addEventListener("click", () => {
         return;
     }
     else if (adminButton.id === "startWorker"){
-        var url = "/start_worker";
+        var url = "/video_api/start_worker";
         var method = "PUT";
     }
     else if (adminButton.id === "stopWorker"){
-        var url = "/stop_worker";
+        var url = "/video_api/stop_worker";
         var method = "DELETE";
     }
 

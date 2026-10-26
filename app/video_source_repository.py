@@ -52,7 +52,7 @@ class VideoSourceRepository:
 
     def get_video_sources(self, video_id : int | None = None) -> List[tuple] | tuple:
         base_query = """
-            select v.id, v.status, c.name, s.name 
+            select v.id, v.status, c.name, s.name, v.url
             from raw.video_sources AS v
             join raw.streets AS s ON v.street_id = s.id
             join raw.cities AS c ON c.id = s.city_id

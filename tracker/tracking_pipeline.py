@@ -14,5 +14,5 @@ class TrackingPipeline:
             self.start_time = current_time
             self.yolo_tracker.reset_tracker()
 
-        self.yolo_tracker.detect_object(frame)
+        return self.yolo_tracker.detect_object(frame)
 
