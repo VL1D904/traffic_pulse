@@ -35,7 +35,6 @@ class Orchestrator:
                     continue
 
                 data = json.loads(message["data"])
-                print(data)
                 if data["command"] == "start":
                     process = multiprocessing.Process(target=self.run_worker, args=(data["url"], ))
                     self.processings[data["video_id"]] = process

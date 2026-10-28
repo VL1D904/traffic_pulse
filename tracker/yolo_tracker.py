@@ -1,5 +1,6 @@
 from ultralytics import YOLO
 import uuid
+import numpy as np
 
 
 class YoloTracker:
@@ -17,7 +18,7 @@ class YoloTracker:
         self.yolo_model = YOLO(self.yolo_model_name)
         self.session_uuid = uuid.uuid4()
 
-    def detect_object(self, frame) -> None:
+    def detect_object(self, frame) -> tuple[np.ndarray, np.ndarray]:
         result = self.yolo_model.track(frame,
                                        persist=True,
                                        tracker='bytetrack.yaml',
