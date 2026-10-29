@@ -1,4 +1,4 @@
-from abc import ABC
+from abc import ABC, abstractmethod
 from typing import Generator
 
 
@@ -8,6 +8,6 @@ class VideoResolver(ABC):
         self.video_url = video_url
 
     # Абстрактный метод получения кадров из видеопотока
-    @classmethod
+    @abstractmethod
     def get_frames(self) -> Generator:
         pass

@@ -30,7 +30,7 @@ class WebsocketReader{
 
 function startWebsocket() {
     sourcesList2.forEach((source) => {
-        let url = `ws://127.0.0.1:8000/ws/get_plot/${source.id}`
+        let url = `ws://127.0.0.1:5000/video_api/get_plot/${source.id}`
         const websocket_reader = new WebsocketReader(url)
         var video = source.querySelector("img");
         websocket_reader.connect(video);

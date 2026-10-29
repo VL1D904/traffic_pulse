@@ -4,6 +4,7 @@ import json
 import redis
 import os
 import multiprocessing
+import asyncio
 
 
 load_dotenv()
@@ -24,9 +25,9 @@ class Orchestrator:
 
         self.processings = dict()
 
-    def run_worker(self, url):
-        worker = VideoWorker()
-        worker.start(url)
+    def run_worker(self, url: str, video_id: int) -> None:
+        worker = VideoWorker(video_id)
+        asyncio.run(worker.start(url))
 
     def listening(self) -> None:
         try:
@@ -36,7 +37,7 @@ class Orchestrator:
 
                 data = json.loads(message["data"])
                 if data["command"] == "start":
-                    process = multiprocessing.Process(target=self.run_worker, args=(data["url"], ))
+                    process = multiprocessing.Process(target=self.run_worker, args=(data["url"], data["video_id"]))
                     self.processings[data["video_id"]] = process
                     process.start()
                     
