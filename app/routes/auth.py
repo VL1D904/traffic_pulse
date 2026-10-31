@@ -2,7 +2,7 @@ from fastapi import APIRouter, Request, Form
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from fastapi.responses import RedirectResponse
-from dependies import BASE_DIR, templates, admin_model, jwt_tokenizer
+from app.dependencies import BASE_DIR, templates, admin_model, jwt_tokenizer
 
 
 

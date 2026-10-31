@@ -3,6 +3,7 @@ from datetime import datetime
 from typing import List
 
 
+# Контракт для детекций
 class DetectionContract(BaseModel):
     track_id: int
     track_type_id: int

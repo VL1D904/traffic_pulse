@@ -6,14 +6,18 @@ import time
 import numpy as np
 
 
+# Класс конвейера для трекинга видеопотока
 class TrackingPipeline:
     def __init__(self):
         self.TRACKER_TTL = 60 * 60
         self.yolo_tracker = YoloTracker()
         self.start_time = time.time()
 
+    # Основная функция трекинга кадра
     def tracking(self, frame: np.ndarray, frame_count: int) -> FrameResultContract:
         current_time = time.time() 
+
+        # Перезапуск yolo с новой сессией
         if (current_time - self.start_time) >= self.TRACKER_TTL:
             self.start_time = current_time
             self.yolo_tracker.reset_tracker()
@@ -28,6 +32,7 @@ class TrackingPipeline:
         )
         return frame_result
 
+    # Функция обработки данных детекций
     def process_frame(self, detections: np.ndarray, current_time: float) -> List[DetectionContract]:
         detection_contracts = []
 

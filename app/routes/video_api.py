@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, WebSocket, WebSocketDisconnect
 from fastapi.responses import JSONResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
-from dependies import BASE_DIR, templates, video_source_repository, get_current_user, source_handler
+from app.dependencies import BASE_DIR, templates, video_source_repository, get_current_user, source_handler
 from video_source import VideoSource
 from worker_structure import WorkerStructure
 import asyncio

@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Request, Depends
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
-from dependies import BASE_DIR, templates, get_current_user, video_source_repository
+from app.dependencies import BASE_DIR, templates, get_current_user, video_source_repository
 
 
 

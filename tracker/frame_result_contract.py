@@ -4,6 +4,7 @@ from detection_contract import DetectionContract
 import numpy as np
 
 
+# Контракт для результатов детекции кадра 
 class FrameResultContract(BaseModel):
     model_config = ConfigDict(arbitrary_types_allowed=True)
 
