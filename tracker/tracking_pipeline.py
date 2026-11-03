@@ -1,6 +1,6 @@
 from yolo_tracker import YoloTracker
-from detection_contract import DetectionContract
-from frame_result_contract import FrameResultContract
+from contracts.detection_contract import DetectionContract
+from contracts.frame_result_contract import FrameResultContract
 from typing import List
 import time
 import numpy as np

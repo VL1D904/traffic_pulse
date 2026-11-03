@@ -1,5 +1,5 @@
-from sink import Sink
-from frame_result_contract import FrameResultContract
+from sinks.base_sink import BaseSink
+from contracts.frame_result_contract import FrameResultContract
 from dotenv import load_dotenv
 import os
 import websockets
@@ -9,7 +9,7 @@ import base64
 import numpy as np
 
 
-class WebSocketSink(Sink):
+class WebSocketSink(BaseSink):
     def __init__(self) -> None:
         self.websocket_url = os.getenv("WEBSOCKET_URL")
         self.websocket = None
@@ -27,7 +27,7 @@ class WebSocketSink(Sink):
         frame_bytes = base64.b64encode(frame_bytes).decode('utf-8')
         return frame_bytes 
 
-    async def send_plot(self, frame_result: FrameResultContract, video_id: int) -> None:
+    async def send(self, frame_result: FrameResultContract, video_id: int) -> None:
         frame_bytes = self.process_frame(frame_result.processed_frame)
         frame_data = {video_id: frame_bytes}
         

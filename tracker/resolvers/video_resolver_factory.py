@@ -1,5 +1,5 @@
-from video_resolver import VideoResolver
-from vk_video_resolver import VKVideoResolver
+from resolvers.video_resolver import VideoResolver
+from resolvers.vk_video_resolver import VKVideoResolver
 import re
 
 

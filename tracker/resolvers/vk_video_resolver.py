@@ -1,4 +1,4 @@
-from video_resolver import VideoResolver
+from resolvers.video_resolver import VideoResolver
 from typing import Generator
 import time
 import os

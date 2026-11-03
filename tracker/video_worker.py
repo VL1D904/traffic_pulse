@@ -1,52 +1,49 @@
 from tracking_pipeline import TrackingPipeline
-from video_resolver_factory import VideoResolverFactory
-from websocket_sink import WebSocketSink
+from processing_pipeline import ProcessingPipeline
+from sinks.websocket_sink import WebSocketSink
+from sinks.sink_manager import SinkManager
+import signal
 import asyncio
 import multiprocessing
-
 
 class VideoWorker:
     def __init__(self, video_id: int, stop_event: multiprocessing.Event) -> None:
         self.video_id = video_id
         self.stop_event = stop_event
-        self.tracking_pipeline = TrackingPipeline()
+        
         self.websocket_sink = WebSocketSink()
+        self.sink_manager = SinkManager([self.websocket_sink])
+
+        self.processing_pipeline = ProcessingPipeline(
+            self.sink_manager
+        )
+
+    async def event_listening(self):
+        await asyncio.to_thread(self.stop_event.wait)
 
     async def start(self, url: str) -> None:
-        await self.websocket_sink.connect()
+        loop = asyncio.get_running_loop()
+        loop.add_signal_handler(signal.SIGTERM, lambda: self.stop_event.set())
 
         try:
-            video_resolver = VideoResolverFactory.create(url)
-            for frame, frame_count in video_resolver.get_frames():
-                if self.stop_event.is_set():
-                    break
+            await self.sink_manager.connect_all()
 
-                frame_result = await asyncio.to_thread(
-                    self.tracking_pipeline.tracking, frame, frame_count
-                )
+            task_processing = asyncio.create_task(self.processing_pipeline.run(url, self.video_id))
+            task_event_listening = asyncio.create_task(self.event_listening())
 
-                if self.stop_event.is_set():
-                    break
+            done, pending = await asyncio.wait({task_event_listening, task_processing}, return_when='FIRST_COMPLETED')
 
-                await self.websocket_sink.send_plot(frame_result, self.video_id)
-        except asyncio.CancelledError:
-            raise
-        except Exception as ex:
-            print(f'Воркер {self.video_id} Ошибка {ex}')
-        finally:
-            try:
-                print(f"[Worker {self.video_id}] Graceful shutdown: закрываем WebSocket")
-                await asyncio.shield(self.websocket_sink.close())
-            except asyncio.CancelledError:
-                print(f"[Worker {self.video_id}] Принудительное закрытие WebSocket")
+            for task in pending:
+                task.cancel()
                 try:
-                    if hasattr(self.websocket_sink, 'websocket') and self.websocket_sink.websocket:
-                        await self.websocket_sink.websocket.close()
-                except Exception:
+                    await task
+                except asyncio.CancelledError:
                     pass
-            except Exception as e:
-                print(f"[Worker {self.video_id}] Ошибка при закрытии WebSocket: {e}")
-            
+
+        except Exception as ex:
+            print(f"Произошла ошибка worker:{self.video_id}: {ex}")
+        finally:
+            await self.sink_manager.close_all()
             
 
 

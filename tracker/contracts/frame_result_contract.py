@@ -1,6 +1,6 @@
 from pydantic import BaseModel, ConfigDict, UUID4
 from typing import List
-from detection_contract import DetectionContract
+from contracts.detection_contract import DetectionContract
 import numpy as np
 
 
