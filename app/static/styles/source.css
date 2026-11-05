@@ -92,8 +92,23 @@ header>p{
     color: black;
 }
 
-#completed{
+#inactive{
     background-color: rgb(189, 36, 36);
+    color: white;
+}
+
+#pending{
+    background-color: rgb(214, 117, 27);
+    color: white;
+}
+
+#canceled{
+    background-color: rgb(209, 35, 35);
+    color: white;
+}
+
+#errorVideo{
+    background-color: rgb(107, 23, 23);
     color: white;
 }
 

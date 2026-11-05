@@ -40,7 +40,33 @@ function updateStatusSpan(source, status){
     }
     else if (status == "inactive"){
         videoStatusElem.textContent = "Отключена";
-        videoStatusElem.id = "completed";
+        videoStatusElem.id = "inactive";
+        if (videoButton !== null){
+            videoButton.textContent = "Запустить трансляцию"
+            videoButton.id = "startWorker"
+            
+        }
+    }
+    else if (status == "pending"){
+        videoStatusElem.textContent = "В ожидании";
+        videoStatusElem.id = "pending";
+        if (videoButton !== null){
+            videoButton.textContent = "Остановить трансляцию"
+            videoButton.id = "stopWorker"
+        }
+    }
+    else if (status == "canceled"){
+        videoStatusElem.textContent = "Отменяется";
+        videoStatusElem.id = "canceled";
+        if (videoButton !== null){
+            videoButton.textContent = "Запустить трансляцию"
+            videoButton.id = "startWorker"
+            
+        }
+    }
+    else if (status == "error"){
+        videoStatusElem.textContent = "Ошибка";
+        videoStatusElem.id = "errorVideo";
         if (videoButton !== null){
             videoButton.textContent = "Запустить трансляцию"
             videoButton.id = "startWorker"

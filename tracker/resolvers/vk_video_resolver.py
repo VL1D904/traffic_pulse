@@ -43,6 +43,7 @@ class VKVideoResolver(VideoResolver):
             self.stream_url = process.stdout.strip()
         except subprocess.CalledProcessError as err:
             print(f"Произошла ошибка получения url потока:\n{err.stderr}")
+            raise
 
     # Функция запуска процесса чтения кадров видеопотока через ffmpeg
     def ffmpeg_reader(self) -> None:
@@ -102,5 +103,6 @@ class VKVideoResolver(VideoResolver):
                 yield (frame, frame_count)
         except Exception as ex:
             print(f"Произошла ошибка {ex}")
+            raise
         finally:
             self.stop_ffmpeg()
