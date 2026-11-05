@@ -38,7 +38,8 @@ async def get_video_status(
     video_id: int,
     video_source_repository: VideoSourceRepository = Depends(get_video_source_repository)
     ):
-    video_status = video_source_repository.get_video_sources()[0][1]
+    raw_video_data = await video_source_repository.get_video_sources(video_id)
+    video_status = raw_video_data[1]
     if video_status is None:
         return JSONResponse({"message": "Трансляция не найдена"}, 404)
     return JSONResponse({"status": video_status}, 200) 
@@ -50,7 +51,7 @@ async def start_worker(
     source_handler: SourceHandler = Depends(get_source_handler)
     ):
     try:
-        video_source = video_source_repository.get_video_sources(worker_structure.video_id)
+        video_source = await video_source_repository.get_video_sources(worker_structure.video_id)
         video_source_dict = {
             "video_id": video_source[0],
             "command": "start",
@@ -69,7 +70,7 @@ async def stop_worker(
     source_handler: SourceHandler = Depends(get_source_handler)
     ):
     try:
-        video_source = video_source_repository.get_video_sources(worker_structure.video_id)
+        video_source = await video_source_repository.get_video_sources(worker_structure.video_id)
         video_source_dict = {
             "video_id": video_source[0],
             "command": "stop",

@@ -25,7 +25,7 @@ async def login_admin(
     admin_model: AdminRepository = Depends(get_admin_repository),
     jwt_tokenizer: SecurityToken = Depends(get_jwt_tokenizer)
     ):
-    is_admin = admin_model.check_admin(login, password)
+    is_admin = await admin_model.check_admin(login, password)
     if not is_admin:
         return templates.TemplateResponse(request=request,
                                           name="login.html",

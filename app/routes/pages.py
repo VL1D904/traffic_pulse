@@ -15,7 +15,7 @@ async def home_page(
     user = Depends(get_current_user),
     video_source_repository: VideoSourceRepository = Depends(get_video_source_repository)
     ):
-    sources = video_source_repository.get_video_sources()
+    sources = await video_source_repository.get_video_sources()
     return templates.TemplateResponse(request=request,
                                         name="home.html",
                                         context={"user": user, "sources": sources})
@@ -27,7 +27,7 @@ async def source_page(
     user = Depends(get_current_user),
     video_source_repository: VideoSourceRepository = Depends(get_video_source_repository)
     ):
-    source_info = video_source_repository.get_video_sources(source_id)
+    source_info = await video_source_repository.get_video_sources(source_id)
     return templates.TemplateResponse(request=request,
                                         name="source.html",
                                         context={"source_info": source_info, "user": user, "source_id": source_id})

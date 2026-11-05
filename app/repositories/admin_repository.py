@@ -9,26 +9,23 @@ load_dotenv()
 
 
 class AdminRepository(BaseRepository):
-    def add_admin(self, login: str, password: str) -> None:
-        try:
-            with self.CONNECTION.cursor() as cursor:
-                hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt(rounds=12))
-                query = "insert into admin.admins (login, pwd) values (%s, %s) on conflict do nothing"
-                cursor.execute(query, (login, hashed_password.decode('utf-8')))
-                self.CONNECTION.commit()
-        except psycopg2.Error as ex:
-            self.CONNECTION.rollback()
-            raise ex
+    async def add_admin(self, login: str, password: str) -> None:
+        hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt(rounds=12))
 
-    def get_password(self, login: str) -> (tuple | None):
-        with self.CONNECTION.cursor() as cursor:
-            query = "select pwd from admin.admins where login = %s"
-            cursor.execute(query, (login,))
-            data = cursor.fetchone()
-            return data
+        async with self.pool.acquire() as connection:
+            async with connection.transaction():
+                query = "insert into admin.admins (login, pwd) values ($1, $2) on conflict do nothing"
+                await connection.execute(query, login, hashed_password.decode('utf-8'))
 
-    def check_admin(self, login: str, password: str) -> bool:
-        admin_pwd = self.get_password(login)
+    async def get_password(self, login: str) -> (tuple | None):
+        async with self.pool.acquire() as connection:
+            async with connection.transaction():
+                query = "select pwd from admin.admins where login = $1"
+                data = await connection.fetchrow(query, login)
+                return tuple(data) if data is not None else None
+
+    async def check_admin(self, login: str, password: str) -> bool:
+        admin_pwd = await self.get_password(login)
         if not admin_pwd:
             return False
         
