@@ -1,11 +1,12 @@
 from fastapi import APIRouter, Depends, WebSocket, WebSocketDisconnect
 from fastapi.responses import JSONResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
-from dependencies import BASE_DIR, templates, video_source_repository, get_current_user, source_handler
+from dependencies import BASE_DIR, templates, get_video_source_repository, get_current_user, get_source_handler
 from video_source import VideoSource
 from worker_structure import WorkerStructure
+from source_handler import SourceHandler
+from repositories.video_source_repository import VideoSourceRepository
 import asyncio
-import websocket
 import base64
 
 
@@ -17,7 +18,11 @@ router.mount("/static", StaticFiles(directory=BASE_DIR / 'static'), name="static
 
 
 @router.post("/add_source")
-async def add_source(video_source: VideoSource, user = Depends(get_current_user)):
+async def add_source(
+    video_source: VideoSource,
+    user = Depends(get_current_user),
+    video_source_repository: VideoSourceRepository = Depends(get_video_source_repository)
+    ):
     if user is None:
         return JSONResponse({"message": "Отсутсвуют права доступа к добавлению источника"}, 403)
     is_source = video_source_repository.check_source_exists(video_source.url)
@@ -29,14 +34,21 @@ async def add_source(video_source: VideoSource, user = Depends(get_current_user)
     return response
 
 @router.get("/video_status")
-async def get_video_status(video_id: int):
+async def get_video_status(
+    video_id: int,
+    video_source_repository: VideoSourceRepository = Depends(get_video_source_repository)
+    ):
     video_status = video_source_repository.get_video_sources()[0][1]
     if video_status is None:
         return JSONResponse({"message": "Трансляция не найдена"}, 404)
     return JSONResponse({"status": video_status}, 200) 
 
 @router.put("/start_worker")
-async def start_worker(worker_structure: WorkerStructure):
+async def start_worker(
+    worker_structure: WorkerStructure,
+    video_source_repository: VideoSourceRepository = Depends(get_video_source_repository),
+    source_handler: SourceHandler = Depends(get_source_handler)
+    ):
     try:
         video_source = video_source_repository.get_video_sources(worker_structure.video_id)
         video_source_dict = {
@@ -51,7 +63,11 @@ async def start_worker(worker_structure: WorkerStructure):
 
 
 @router.delete("/stop_worker")
-async def stop_worker(worker_structure: WorkerStructure):
+async def stop_worker(
+    worker_structure: WorkerStructure,
+    video_source_repository: VideoSourceRepository = Depends(get_video_source_repository),
+    source_handler: SourceHandler = Depends(get_source_handler)
+    ):
     try:
         video_source = video_source_repository.get_video_sources(worker_structure.video_id)
         video_source_dict = {

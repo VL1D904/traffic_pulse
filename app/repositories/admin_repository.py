@@ -1,4 +1,5 @@
 from dotenv import load_dotenv
+from repositories.base_repository import BaseRepository 
 import os
 import psycopg2
 import bcrypt
@@ -7,16 +8,7 @@ import bcrypt
 load_dotenv()
 
 
-class AdminModel:
-    def __init__(self) -> None:
-        self.CONNECTION = psycopg2.connect(
-            dbname=os.getenv("DATABASE_NAME"),
-            user=os.getenv("DATABASE_USER"),
-            password=os.getenv("DATABASE_PASSWORD"),
-            host=os.getenv("DATABASE_HOST"),
-            port=os.getenv("DATABASE_PORT")
-        )
-
+class AdminRepository(BaseRepository):
     def add_admin(self, login: str, password: str) -> None:
         try:
             with self.CONNECTION.cursor() as cursor:

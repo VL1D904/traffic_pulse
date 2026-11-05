@@ -1,8 +1,9 @@
-from fastapi import APIRouter, Request, Form
+from fastapi import APIRouter, Request, Form, Depends
 from fastapi.staticfiles import StaticFiles
-from fastapi.templating import Jinja2Templates
 from fastapi.responses import RedirectResponse
-from dependencies import BASE_DIR, templates, admin_model, jwt_tokenizer
+from dependencies import BASE_DIR, templates, get_admin_repository, get_jwt_tokenizer
+from repositories.admin_repository import AdminRepository
+from security_token import SecurityToken
 
 
 
@@ -17,7 +18,13 @@ async def login_page(request: Request):
                                           context={"user_exist": True})
 
 @router.post("/login")
-async def login_admin(request: Request, login = Form(), password = Form()):
+async def login_admin(
+    request: Request,
+    login = Form(), 
+    password = Form(),
+    admin_model: AdminRepository = Depends(get_admin_repository),
+    jwt_tokenizer: SecurityToken = Depends(get_jwt_tokenizer)
+    ):
     is_admin = admin_model.check_admin(login, password)
     if not is_admin:
         return templates.TemplateResponse(request=request,
