@@ -25,11 +25,11 @@ async def add_source(
     ):
     if user is None:
         return JSONResponse({"message": "Отсутсвуют права доступа к добавлению источника"}, 403)
-    is_source = video_source_repository.check_source_exists(video_source.url)
+    is_source = await video_source_repository.check_source_exists(video_source.url)
     if is_source:
         return JSONResponse({"message": "Источник уже существует"}, 409)
 
-    video_source_repository.insert_video_source(video_source)
+    await video_source_repository.insert_video_source(video_source)
     response = RedirectResponse('/', status_code=302)
     return response
 

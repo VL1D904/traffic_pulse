@@ -2,6 +2,7 @@ from processing_pipeline import ProcessingPipeline
 from sinks.websocket_sink import WebSocketSink
 from sinks.database_sink import DatabaseSink
 from sinks.sink_manager import SinkManager
+from sinks.kafka_sink import KafkaSink
 from video_status import VideoStatus
 import signal
 import asyncio
@@ -15,7 +16,8 @@ class VideoWorker:
         
         self.websocket_sink = WebSocketSink()
         self.database_sink = DatabaseSink()
-        self.sink_manager = SinkManager([self.websocket_sink, self.database_sink])
+        self.kafka_sink = KafkaSink()
+        self.sink_manager = SinkManager([self.websocket_sink, self.database_sink, self.kafka_sink])
 
         self.processing_pipeline = ProcessingPipeline(
             self.sink_manager

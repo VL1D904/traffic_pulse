@@ -30,12 +30,12 @@ class DatabaseSink(BaseSink):
         pass
 
     async def set_video_status(self, video_id: int, video_status: VideoStatus) -> None:
-        query = "update raw.video_sources set status = $1 where id = $2"
+        query = "update reference.video_sources set status = $1 where id = $2"
         await self.connection.execute(query, video_status.value, video_id)
 
     async def start_recording(self, video_id: int) -> None:
         recording_at = datetime.now()
-        query = """insert into raw.video_recording (video_source_id, recording_at)
+        query = """insert into reference.video_recording (video_source_id, recording_at)
                 values ($1, $2)
                 returning id
                 """
@@ -44,5 +44,5 @@ class DatabaseSink(BaseSink):
 
     async def stop_recording(self, recording_id: int) -> None:
         recording_end = datetime.now()
-        query = "update raw.video_recording set recording_end = $1 where id = $2"
+        query = "update reference.video_recording set recording_end = $1 where id = $2"
         await self.connection.execute(query, recording_end, recording_id)
