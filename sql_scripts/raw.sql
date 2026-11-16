@@ -30,9 +30,13 @@ create table if not exists detections (
 
 	frame_count int not null,
 	confidence float not null,
+	frame_width float not null,
+	frame_height float not null,
 	check (confidence between 0 and 1),
 	primary key (detection_id, detection_time)
 ) partition by range(detection_time);
+
+
 
 create index idx_detection_video_time on detections(video_id, detection_time);
 create index idx_detections_track ON raw.detections (session_id, track_id);

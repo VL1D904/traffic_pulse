@@ -6,9 +6,32 @@ from dotenv import load_dotenv
 from typing import Optional
 import os
 import json
+import asyncio
 
 
 load_dotenv()
+
+
+DETECTION_SCHEMA = {
+    "type": "struct",
+    "fields": [
+        {"field": "video_id", "type": "int32", "optional": False},
+        {"field": "session_id", "type": "string", "optional": False},
+        {"field": "track_id", "type": "int64", "optional": False},
+        {"field": "track_type_id", "type": "int32", "optional": False},
+        {"field": "detection_time", "type": "int64", "optional": False},
+        {"field": "bbox_x1_px", "type": "int32", "optional": False},
+        {"field": "bbox_y1_px", "type": "int32", "optional": False},
+        {"field": "bbox_x2_px", "type": "int32", "optional": False},
+        {"field": "bbox_y2_px", "type": "int32", "optional": False},
+        {"field": "frame_count", "type": "int32", "optional": False},
+        {"field": "confidence", "type": "double", "optional": False},
+        {"field": "frame_width", "type": "double", "optional": False},
+        {"field": "frame_height", "type": "double", "optional": False},
+    ],
+    "optional": False,
+    "name": "raw_detection"
+}
 
 
 class KafkaSink(BaseSink):
@@ -42,9 +65,16 @@ class KafkaSink(BaseSink):
         if not detections:
             return
 
-        await self.producer.send_and_wait(
-            topic=self.topic,
-            value=detections,
-            key=video_id
-        )
+        tasks = [
+            self.producer.send_and_wait(
+                topic=self.topic,
+                value={
+                    "schema": DETECTION_SCHEMA,
+                    "payload": detection
+                }
+            )
+            for detection in detections
+        ]
+
+        await asyncio.gather(*tasks)
 

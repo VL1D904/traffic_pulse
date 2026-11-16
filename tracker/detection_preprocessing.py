@@ -23,7 +23,8 @@ class DetectionPreprocessing:
                 "bbox_y2_px": int(detection.bbox[3]),
                 "frame_count": frame_result.frame_count,
                 "confidence": detection.confidence,
-                "frame_size": [width, height]
+                "frame_width": width,
+                "frame_height": height
             }
 
             detections.append(detection_dict)
